@@ -13,54 +13,64 @@
  See the License for the specific language governing permissions and
  limitations under the License.
  -->
-
 <script lang="ts">
   /* global google */
-
   import { onMount } from 'svelte';
-  import type { MdFilledTextField } from '@material/web/textfield/filled-text-field';
 
+  export let map: google.maps.Map;          // existing map instance
+  export let initialValue = '';             // pre-filled value (optional)
+  export let zoom = 19;                     // zoom to apply after selection
   export let location: google.maps.LatLng | undefined;
 
-  export let placesLibrary: google.maps.PlacesLibrary;
-  export let map: google.maps.Map;
-  export let initialValue = '';
-  export let zoom = 19;
-
-  let textFieldElement: MdFilledTextField;
+  let container: HTMLDivElement;            // wrapper for the widget
+  let pacEl: HTMLElement;                   // PlaceAutocompleteElement instance
 
   onMount(async () => {
-    // https://lit.dev/docs/components/shadow-dom/
-    await textFieldElement.updateComplete;
-    const inputElement = textFieldElement.renderRoot.querySelector('input') as HTMLInputElement;
-    const autocomplete = new placesLibrary.Autocomplete(inputElement, {
-      fields: ['formatted_address', 'geometry', 'name'],
-    });
-    autocomplete.addListener('place_changed', async () => {
-      const place = autocomplete.getPlace();
-      if (!place.geometry || !place.geometry.location) {
-        textFieldElement.value = '';
-        return;
-      }
-      if (place.geometry.viewport) {
-        // map.fitBounds(place.geometry.viewport);
-        map.setCenter(place.geometry.location);
-        map.setZoom(zoom);
-      } else {
-        map.setCenter(place.geometry.location);
+    // 1. Load the Places library (new widgets live here too)
+    await google.maps.importLibrary('places') as google.maps.PlacesLibrary;
+
+    // 2. Create the widget
+    //    You can pass options such as includedRegionCodes, locationBias, etc.
+    //    Here we just keep it simple:
+    //    @ts-ignore is still needed until @types/google.maps fully catches up.
+    // @ts-ignore
+    pacEl = new google.maps.places.PlaceAutocompleteElement();
+
+    // Optional: pre-set a value
+    if (initialValue) pacEl.value = initialValue;
+
+    // 3. Append to the DOM (or push to map controls if you prefer)
+    container.appendChild(pacEl);
+
+    // 4. Handle the selection event
+    pacEl.addEventListener('gmp-select', async ({ placePrediction }: any) => {
+      const place = placePrediction.toPlace();
+      await place.fetchFields({
+        fields: ['displayName', 'formattedAddress', 'location', 'viewport']
+      });
+
+      // Center/zoom map similarly to your old code
+      if (place.viewport) {
+        map.fitBounds(place.viewport);
+      } else if (place.location) {
+        map.setCenter(place.location);
         map.setZoom(zoom);
       }
 
-      location = place.geometry.location;
-      if (place.name) {
-        textFieldElement.value = place.name;
-      } else if (place.formatted_address) {
-        textFieldElement.value = place.formatted_address;
-      }
+      // Expose the location back to the parent component
+      location = place.location ?? undefined;
     });
   });
 </script>
 
-<md-filled-text-field bind:this={textFieldElement} label="Search an address" value={initialValue}>
-  <md-icon slot="leadingicon">search</md-icon>
-</md-filled-text-field>
+<!-- The widget renders itself; this div is only a placeholder -->
+<div class="autocomplete-wrapper" bind:this={container}></div>
+
+<style>
+  /* The widget is a regular element – style as you wish */
+  .autocomplete-wrapper :global(gmp-place-autocomplete) {
+    width: 100%;
+  }
+</style>
+
+

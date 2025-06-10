@@ -27,8 +27,8 @@
 
   const googleMapsApiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
   const defaultPlace = {
-    name: 'Rinconada Library',
-    address: '1213 Newell Rd, Palo Alto, CA 94303',
+    name: '',
+    address: 'Via Mascagni 144, Modena',
   };
   let location: google.maps.LatLng | undefined;
   const zoom = 19;

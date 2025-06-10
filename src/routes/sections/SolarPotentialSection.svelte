@@ -55,18 +55,18 @@
   let yearlyEnergyDcKwh = 12000;
 
   // Basic settings
-  let monthlyAverageEnergyBill: number = 300;
-  let energyCostPerKwh = 0.31;
+  let monthlyAverageEnergyBill: number = 120; // EUR
+  let energyCostPerKwh = 0.25; // EUR per kWh
   let panelCapacityWatts = 400;
-  let solarIncentives: number = 7000;
-  let installationCostPerWatt: number = 4.0;
+  let solarIncentives: number = 6000; // EUR - Italian solar incentives
+  let installationCostPerWatt: number = 2.5; // EUR per Watt - typical in Italy
   let installationLifeSpan: number = 20;
 
   // Advanced settings
   let dcToAcDerate = 0.85;
   let efficiencyDepreciationFactor = 0.995;
-  let costIncreaseFactor = 1.022;
-  let discountRate = 1.04;
+  let costIncreaseFactor = 1.025; // Italy energy cost increase ~2.5% annually
+  let discountRate = 1.03; // Lower discount rate reflecting European interest rates
 
   // Solar installation
   let installationSizeKw: number = (panelsCount * panelCapacityWatts) / 1000;
@@ -94,18 +94,18 @@
   let remainingLifetimeUtilityBill: number = yearlyUtilityBillEstimates.reduce((x, y) => x + y, 0);
   let totalCostWithSolar: number =
     installationCostTotal + remainingLifetimeUtilityBill - solarIncentives;
-  console.log(`Cost with solar: $${totalCostWithSolar.toFixed(2)}`);
+  console.log(`Cost with solar: €${totalCostWithSolar.toFixed(2)}`);
 
   // Cost without solar for installation life span
   let yearlyCostWithoutSolar: number[] = [...Array(installationLifeSpan).keys()].map(
     (year) => (monthlyAverageEnergyBill * 12 * costIncreaseFactor ** year) / discountRate ** year,
   );
   let totalCostWithoutSolar: number = yearlyCostWithoutSolar.reduce((x, y) => x + y, 0);
-  console.log(`Cost without solar: $${totalCostWithoutSolar.toFixed(2)}`);
+  console.log(`Cost without solar: €${totalCostWithoutSolar.toFixed(2)}`);
 
   // Savings with solar for installation life span
   let savings: number = totalCostWithoutSolar - totalCostWithSolar;
-  console.log(`Savings: $${savings.toFixed(2)} in ${installationLifeSpan} years`);
+  console.log(`Savings: €${savings.toFixed(2)} in ${installationLifeSpan} years`);
   // [END solar_potential_calculations]
 
   // Reactive calculations
@@ -213,13 +213,13 @@
       <p class="relative inline-flex items-center space-x-2">
         <md-icon class="md:w-6 w-8">info</md-icon>
         <span>
-          Projections use a
+          Projections use a financial model
           <a
             class="primary-text"
             href="https://developers.google.com/maps/documentation/solar/calculate-costs-us"
             target="_blank"
           >
-            USA financial model
+            adapted for Italy (EUR)
             <md-icon class="text-sm">open_in_new</md-icon>
           </a>
         </span>

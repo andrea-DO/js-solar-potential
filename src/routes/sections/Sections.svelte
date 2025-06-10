@@ -35,9 +35,9 @@
   let showPanels = true;
 
   // User settings
-  let monthlyAverageEnergyBillInput = 300;
+  let monthlyAverageEnergyBillInput = 120; // Average monthly energy bill in Italy (EUR)
   let panelCapacityWattsInput = 250;
-  let energyCostPerKwhInput = 0.31;
+  let energyCostPerKwhInput = 0.25; // Average energy cost per kWh in Italy (EUR)
   let dcToAcDerateInput = 0.85;
 
   // Find the config that covers the yearly energy consumption.

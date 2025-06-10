@@ -17,14 +17,16 @@
 import type { SolarPanelConfig } from './solar';
 
 export function showNumber(x: number) {
-  return x.toLocaleString(undefined, { maximumFractionDigits: 1 });
+  return x.toLocaleString('it-IT', { maximumFractionDigits: 1 });
 }
 
 export function showMoney(amount: number) {
-  return `$${amount.toLocaleString(undefined, {
+  return amount.toLocaleString('it-IT', {
+    style: 'currency',
+    currency: 'EUR',
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
-  })}`;
+  });
 }
 
 export function findSolarConfig(

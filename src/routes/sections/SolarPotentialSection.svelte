@@ -58,7 +58,7 @@
   let monthlyAverageEnergyBill: number = 120; // EUR
   let energyCostPerKwh = 0.25; // EUR per kWh
   let panelCapacityWatts = 400;
-  let solarIncentives: number = 6000; // EUR - Italian solar incentives
+  let solarIncentivesPercent: number = 0.5; // 50% - Italian solar incentives as percentage
   let installationCostPerWatt: number = 2.5; // EUR per Watt - typical in Italy
   let installationLifeSpan: number = 20;
 
@@ -93,7 +93,7 @@
   );
   let remainingLifetimeUtilityBill: number = yearlyUtilityBillEstimates.reduce((x, y) => x + y, 0);
   let totalCostWithSolar: number =
-    installationCostTotal + remainingLifetimeUtilityBill - solarIncentives;
+    installationCostTotal + remainingLifetimeUtilityBill - (installationCostTotal * solarIncentivesPercent);
   console.log(`Cost with solar: €${totalCostWithSolar.toFixed(2)}`);
 
   // Cost without solar for installation life span
@@ -131,7 +131,7 @@
     return Math.max(billEstimate, 0); // bill cannot be negative
   });
   $: remainingLifetimeUtilityBill = yearlyUtilityBillEstimates.reduce((x, y) => x + y, 0);
-  $: totalCostWithSolar = installationCostTotal + remainingLifetimeUtilityBill - solarIncentives;
+  $: totalCostWithSolar = installationCostTotal + remainingLifetimeUtilityBill - (installationCostTotal * solarIncentivesPercent);
   $: yearlyCostWithoutSolar = [...Array(installationLifeSpan).keys()].map(
     (year) =>
       (monthlyAverageEnergyBillInput * 12 * costIncreaseFactor ** year) / discountRate ** year,
@@ -154,7 +154,7 @@
       const cumulativeCostsWithSolar = yearlyUtilityBillEstimates.map(
         (billEstimate, i) =>
           (costWithSolar +=
-            i == 0 ? billEstimate + installationCostTotal - solarIncentives : billEstimate),
+            i == 0 ? billEstimate + installationCostTotal - (installationCostTotal * solarIncentivesPercent) : billEstimate),
       );
       let costWithoutSolar = 0;
       const cumulativeCostsWithoutSolar = yearlyCostWithoutSolar.map(
@@ -249,8 +249,8 @@
       onChange={updateConfig}
     />
 
-    <InputMoney
-      bind:value={solarIncentives}
+    <InputPercent
+      bind:value={solarIncentivesPercent}
       icon="redeem"
       label="Solar incentives"
       onChange={updateConfig}

@@ -27,7 +27,7 @@
 
   const googleMapsApiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
   const defaultPlace = {
-    name: '',
+    name: 'Via Mascagni 144, Modena',
     address: 'Via Mascagni 144, Modena',
   };
   let location: google.maps.LatLng | undefined;
@@ -83,7 +83,7 @@
   <aside class="flex-none md:w-96 w-80 p-2 pt-3 overflow-auto">
     <div class="flex flex-col space-y-2 h-full">
       {#if placesLibrary && map}
-        <SearchBar bind:location {placesLibrary} {map} initialValue={defaultPlace.name} />
+        <SearchBar bind:location {map} initialValue={defaultPlace.name} />
       {/if}
 
       <!-- <div class="p-4 surface-variant outline-text rounded-lg space-y-3">

@@ -209,7 +209,7 @@
   secondary
 >
   <div class="flex flex-col space-y-4 pt-1">
-    <div class="p-4 mb-4 surface-variant outline-text rounded-lg">
+    <!-- <div class="p-4 mb-4 surface-variant outline-text rounded-lg">
       <p class="relative inline-flex items-center space-x-2">
         <md-icon class="md:w-6 w-8">info</md-icon>
         <span>
@@ -224,7 +224,7 @@
           </a>
         </span>
       </p>
-    </div>
+    </div> -->
 
     <InputMoney
       bind:value={monthlyAverageEnergyBillInput}

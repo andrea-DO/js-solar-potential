@@ -76,9 +76,15 @@
 
 <!-- Top bar -->
 <div class="flex flex-row h-full">
+  
   <!-- Main map -->
   <div bind:this={mapElement} class="w-full" />
-
+  <!-- logo -->
+  <!-- <div class="absolute top-0 left-0 p-2 z-10">
+    <a href="https://klaryo.it" target="_blank" class="flex items-center space-x-2">
+      <img src="/logo.png" alt="Klaryo Logo" width="128" height="128" />
+    </a>
+  </div> -->
   <!-- Side bar -->
   <aside class="flex-none md:w-96 w-80 p-2 pt-3 overflow-auto">
     <div class="flex flex-col space-y-2 h-full">
